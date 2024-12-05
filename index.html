@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Evento</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div class="container1">
+        <h1>Cadastro de Evento</h1>
+        <form id="eventForm">
+            <label for="nome_evento">Nome do Evento</label>
+            <input type="text" id="nome_evento" name="nome_evento" placeholder="Digite o nome do evento" required>
+
+            <label for="descricao_evento">Descrição</label>
+            <textarea id="descricao_evento" name="descricao_evento" placeholder="Descreva o evento" required></textarea>
+
+            <label for="data_inicio_evento">Data de Início</label>
+            <input type="datetime-local" id="data_inicio_evento" name="data_inicio_evento" required>
+
+            <label for="data_fim_evento">Data de Fim</label>
+            <input type="datetime-local" id="data_fim_evento" name="data_fim_evento" required>
+
+            <label for="local_evento">Local</label>
+            <input type="text" id="local_evento" name="local_evento" placeholder="Digite o local do evento" required>
+
+            <button type="submit">Cadastrar Evento</button>
+        </form>
+
+        <!-- Área para feedback do usuário -->
+        <div id="feedback"></div>
+        <br>
+        <div><a href="eventos.html">Eventos ja cadastrados</a></div>
+    </div>
+    
+
+    <script>
+        document.getElementById('eventForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário de forma tradicional
+
+            // Coleta os dados do formulário
+            const nome_evento = document.getElementById('nome_evento').value;
+            const descricao_evento = document.getElementById('descricao_evento').value;
+            const data_inicio_evento = document.getElementById('data_inicio_evento').value;
+            const data_fim_evento = document.getElementById('data_fim_evento').value;
+            const local_evento = document.getElementById('local_evento').value;
+
+            // Envia os dados para o backend usando fetch
+            fetch('http://localhost:3000/evento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome_evento: nome_evento,
+                    descricao_evento: descricao_evento,
+                    data_inicio_evento: data_inicio_evento,
+                    data_fim_evento: data_fim_evento,
+                    local_evento: local_evento
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const feedback = document.getElementById('feedback');
+                if (data.message === 'Evento inserido com sucesso') {
+                    feedback.innerHTML = `<p style="color: green;">${data.message}</p>`;
+                    document.getElementById('eventForm').reset(); // Limpa o formulário
+                } else {
+                    feedback.innerHTML = `<p style="color: red;">${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao cadastrar evento:', error);
+                const feedback = document.getElementById('feedback');
+                feedback.innerHTML = `<p style="color: red;">Houve um erro ao cadastrar o evento. Tente novamente.</p>`;
+            });
+        });
+    </script>
+</body>
+</html>

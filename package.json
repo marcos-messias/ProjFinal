@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "body": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "modules": "^0.4.0",
+    "mysql2": "^3.11.5",
+    "node": "^20.18.1",
+    "nodemon": "^3.1.7",
+    "parser": "^0.1.4"
+  },
+  "name": "projfinal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Marcos Messias",
+  "license": "ISC",
+  "description": ""
+}

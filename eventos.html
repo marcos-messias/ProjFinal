@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos Cadastrados</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto ;
+    padding: 20px;
+    background-color: #DEEFE7;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+   
+
+   
+}
+
+
+button {
+    padding: 5px 10px;
+    background-color: #a10d02;
+    color: white;
+    border: none ;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button:hover {
+    background-color: #721a04;
+}
+
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #0e6d20;
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    flex-direction: row;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+li {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+</style>
+<body>
+    <div class="container">
+        <h1>Eventos Cadastrados</h1>
+        <ul id="eventList"></ul>
+
+        <br>
+        <a href="index.html">Cadastrar novo evento</a>
+    </div>
+
+    <script>
+        // Função para carregar e exibir os eventos cadastrados
+        function loadEvents() {
+            fetch('http://localhost:3000/eventos') // Rota GET para obter os eventos
+                .then(response => response.json())
+                .then(events => {
+                    const eventList = document.getElementById('eventList');
+                    eventList.innerHTML = ''; // Limpa a lista antes de adicionar novos eventos
+    
+                    events.forEach(event => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${event.nome_evento}`;
+    
+                        // Criando botão de exclusão
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Excluir';
+                        
+                        // Adicionando a função de exclusão ao botão
+                        deleteButton.onclick = function() {
+                            if (confirm(`Tem certeza que deseja excluir o evento: ${event.nome_evento}?`)) {
+                                deleteEvent(event.id); // Passa o id do evento para excluir
+                            }
+                        };
+    
+                        // Adiciona o botão de exclusão ao item da lista
+                        listItem.appendChild(deleteButton);
+                        eventList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar eventos:', error);
+                    alert('Erro ao carregar os eventos. Tente novamente.');
+                });
+        }
+    
+        // Função para excluir evento
+        function deleteEvent(id) {
+            fetch(`http://localhost:3000/evento/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Exibe a resposta do servidor após exclusão
+                if (data.message === 'Evento excluído com sucesso') {
+                    loadEvents(); // Recarrega a lista de eventos após a exclusão
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir evento:', error);
+                alert('Erro ao excluir o evento. Tente novamente.');
+            });
+        }
+    
+        // Carregar eventos quando a página carregar
+        window.onload = loadEvents;
+    </script>
+    
+</body>
+</html>
